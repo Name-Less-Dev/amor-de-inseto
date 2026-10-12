@@ -39,6 +39,10 @@ var turnos: int = TURNOS_INICIAIS:
 ## Argumentos que o macho já usou (nome do argumento -> true).
 var argumentos_usados: Dictionary = {}
 
+## Segundos para escolher nas próximas escolhas (0 = sem timer).
+## Vale até o roteiro mudar: $> EstadoJogo.tempo_escolha = 0
+var tempo_escolha: float = 0.0
+
 
 ## Volta tudo para os valores iniciais (nova partida).
 func resetar() -> void:
@@ -46,6 +50,7 @@ func resetar() -> void:
 	afeto = AFETO_INICIAL
 	turnos = TURNOS_INICIAIS
 	argumentos_usados.clear()
+	tempo_escolha = 0.0
 	estado_resetado.emit()
 
 

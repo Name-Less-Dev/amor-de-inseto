@@ -70,6 +70,23 @@ var mutation_cooldown: Timer = Timer.new()
 ## Indicator to show that player can progress dialogue.
 @onready var progress: Polygon2D = %Progress
 
+#region Timer de escolha
+
+## Maior delta contado por frame. Evita que o tempo "pule" quando o jogo
+## volta de uma aba em segundo plano (onde o navegador congela os frames).
+const DELTA_MAXIMO := 0.25
+
+## Emitido quando o timer de uma escolha começa e acaba (por escolha ou por tempo).
+signal timer_escolha_iniciado(segundos: float)
+signal timer_escolha_parado
+
+var _tempo_total: float = 0.0
+var _tempo_restante: float = 0.0
+var _timer_ativo: bool = false
+var _sem_foco: bool = false
+
+#endregion
+
 
 func _ready() -> void:
 	balloon.hide()
@@ -89,9 +106,15 @@ func _ready() -> void:
 
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if is_instance_valid(dialogue_line):
 		progress.visible = not dialogue_label.is_typing and dialogue_line.responses.size() == 0 and not dialogue_line.has_tag("voice")
+
+	# Com o jogo pausado o _process não roda, então o timer também para.
+	if _timer_ativo and not _sem_foco:
+		_tempo_restante -= minf(delta, DELTA_MAXIMO)
+		if _tempo_restante <= 0.0:
+			_on_tempo_esgotado()
 
 
 func _unhandled_input(_event: InputEvent) -> void:
@@ -101,6 +124,12 @@ func _unhandled_input(_event: InputEvent) -> void:
 
 
 func _notification(what: int) -> void:
+	# Sem foco (outra aba/janela), o timer de escolha congela.
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		_sem_foco = true
+	elif what == NOTIFICATION_APPLICATION_FOCUS_IN:
+		_sem_foco = false
+
 	## Detect a change of locale and update the current dialogue line to show the new language
 	if what == NOTIFICATION_TRANSLATION_CHANGED and _locale != TranslationServer.get_locale() and is_instance_valid(dialogue_label):
 		_locale = TranslationServer.get_locale()
@@ -125,6 +154,8 @@ func start(with_dialogue_resource: DialogueResource = null, cue: String = "", ex
 ## Apply any changes to the balloon given a new [DialogueLine].
 func apply_dialogue_line() -> void:
 	mutation_cooldown.stop()
+	_parar_timer()
+	var linha_aplicada: DialogueLine = dialogue_line
 
 	progress.hide()
 	is_waiting_for_input = false
@@ -158,6 +189,9 @@ func apply_dialogue_line() -> void:
 	elif dialogue_line.responses.size() > 0:
 		balloon.focus_mode = Control.FOCUS_NONE
 		responses_menu.show()
+		# Só aqui, depois de a fala terminar de ser digitada (e se ela ainda é a atual).
+		if dialogue_line == linha_aplicada:
+			_iniciar_timer()
 	elif dialogue_line.time != "":
 		var time: float = dialogue_line.text.length() * 0.02 if dialogue_line.time == "auto" else dialogue_line.time.to_float()
 		await get_tree().create_timer(time).timeout
@@ -212,7 +246,34 @@ func _on_balloon_gui_input(event: InputEvent) -> void:
 
 
 func _on_responses_menu_response_selected(response: DialogueResponse) -> void:
+	_parar_timer()
 	next(response.next_id)
+
+
+#endregion
+
+#region Timer de escolha
+
+
+func _iniciar_timer() -> void:
+	var segundos: float = EstadoJogo.tempo_escolha
+	if segundos <= 0.0:
+		return
+	_tempo_total = segundos
+	_tempo_restante = segundos
+	_timer_ativo = true
+	timer_escolha_iniciado.emit(segundos)
+
+
+func _parar_timer() -> void:
+	if not _timer_ativo:
+		return
+	_timer_ativo = false
+	timer_escolha_parado.emit()
+
+
+func _on_tempo_esgotado() -> void:
+	_parar_timer()
 
 
 #endregion
