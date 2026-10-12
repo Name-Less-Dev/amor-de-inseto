@@ -24,6 +24,18 @@ Macho: (Paciência dela: {{EstadoJogo.paciencia}} | afeto: {{EstadoJogo.afeto}} 
 	if EstadoJogo.afeto >= 3
 		=> final_absurdo
 $> EstadoJogo.turnos -= 1
+# A 1ª escolha não tem timer; daqui em diante, 4 segundos.
+$> EstadoJogo.tempo_escolha = 4
+=> checar
+
+# Disparado pelo balão quando o tempo de uma escolha acaba.
+~ silencio
+Fêmea: ...Vai ficar calado, é?
+$> EstadoJogo.aplicar_silencio()
+=> checar
+
+# Regras de fim (paciência, afeto, turnos). Se nenhuma decidir, volta a argumentar.
+~ checar
 match EstadoJogo.final_por_regras()
 	when "comido"
 		=> final_comido
