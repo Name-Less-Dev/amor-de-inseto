@@ -34,15 +34,18 @@ else
 ~ final_sobrevive
 Fêmea: Tá bom, você me convenceu. Pode ficar.
 Macho: (Vivo! Eu tô vivo!)
+$> Finais.ir_para_final("sobrevive")
 => END
 
 ~ final_comido
 Fêmea: Foi bom enquanto durou.
 Macho: Espera, a gente pode conver—
+$> Finais.ir_para_final("comido")
 => END
 
 ~ final_absurdo
 Fêmea: Sabe que você daria um ótimo graveto de decoração?
 Fêmea: Vou te pendurar na parede da sala.
 Macho: (Não era bem isso que eu tinha em mente, mas eu aceito.)
+$> Finais.ir_para_final("absurdo")
 => END
