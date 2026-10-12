@@ -1,0 +1,48 @@
+~ start
+$> EstadoJogo.resetar()
+Fêmea: Nossa. Isso foi... intenso.
+Fêmea: Agora me deu uma fome de leão. Ou melhor, de louva-a-deus.
+=> argumentar
+
+~ argumentar
+Macho: (Paciência dela: {{EstadoJogo.paciencia}} | afeto: {{EstadoJogo.afeto}} | turnos: {{EstadoJogo.turnos}})
+- Elogiar as patas dianteiras dela
+	$> EstadoJogo.afeto += 1
+	Macho: Essas patas... nunca vi um bote tão elegante.
+	Fêmea: Para, seu bobo.
+- Reclamar dessa tradição de comer o parceiro
+	$> EstadoJogo.afeto -= 1
+	$> EstadoJogo.paciencia -= 2
+	Macho: Sinceramente, essa tradição é muito ultrapassada.
+	Fêmea: Tradição é tradição, querido.
+- Fingir que é um graveto [if not EstadoJogo.ja_usou("graveto") /]
+	$> EstadoJogo.usar_argumento("graveto")
+	$> EstadoJogo.paciencia -= 1
+	Macho: ...
+	Macho: (Eu sou um graveto. Eu sou um graveto.)
+	Fêmea: Você sabe que eu tô te vendo, né?
+$> EstadoJogo.turnos -= 1
+if EstadoJogo.turnos > 6
+	=> argumentar
+if EstadoJogo.ja_usou("graveto") and EstadoJogo.afeto >= 3
+	=> final_absurdo
+elif EstadoJogo.afeto >= 4 and EstadoJogo.paciencia > 0
+	=> final_sobrevive
+else
+	=> final_comido
+
+~ final_sobrevive
+Fêmea: Tá bom, você me convenceu. Pode ficar.
+Macho: (Vivo! Eu tô vivo!)
+=> END
+
+~ final_comido
+Fêmea: Foi bom enquanto durou.
+Macho: Espera, a gente pode conver—
+=> END
+
+~ final_absurdo
+Fêmea: Sabe que você daria um ótimo graveto de decoração?
+Fêmea: Vou te pendurar na parede da sala.
+Macho: (Não era bem isso que eu tinha em mente, mas eu aceito.)
+=> END

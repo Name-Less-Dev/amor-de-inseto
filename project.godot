@@ -48,7 +48,7 @@ pausa={
 
 [internationalization]
 
-locale/translations_pot_files=PackedStringArray("res://dialogue/cena_cama.dialogue")
+locale/translations_pot_files=PackedStringArray("res://dialogue/cena_cama.dialogue", "res://dialogue/teste_mecanicas.dialogue")
 
 [physics]
 

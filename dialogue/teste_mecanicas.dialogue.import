@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://i04aohrapgdw"
+path="res://.godot/imported/teste_mecanicas.dialogue-fb28b144383bd59520b8afa09d38d9fc.tres"
+
+[deps]
+
+source_file="res://dialogue/teste_mecanicas.dialogue"
+dest_files=["res://.godot/imported/teste_mecanicas.dialogue-fb28b144383bd59520b8afa09d38d9fc.tres"]
+
+[params]
+
+defaults=true
