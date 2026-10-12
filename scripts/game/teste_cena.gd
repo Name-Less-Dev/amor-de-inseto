@@ -1,7 +1,7 @@
-extends Control
+﻿extends Control
 
-const FRASE_TESTE := "Oi! Eu sou só um placeholder... mas um dia vou ser um inseto charmoso."
+const ROTEIRO: DialogueResource = preload("res://dialogue/teste_mecanicas.dialogue")
 
 
 func _ready() -> void:
-	%TextoDialogo.text = FRASE_TESTE
+	DialogueManager.show_example_dialogue_balloon(ROTEIRO, "start")

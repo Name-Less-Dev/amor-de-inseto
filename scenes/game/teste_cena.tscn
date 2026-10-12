@@ -35,22 +35,3 @@ texture = ExtResource("2_icon")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="CaixaTexto" type="PanelContainer" parent="."]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 60.0
-offset_top = -300.0
-offset_right = -60.0
-offset_bottom = -60.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="TextoDialogo" type="Label" parent="CaixaTexto"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 42
-text = "..."
-autowrap_mode = 3
