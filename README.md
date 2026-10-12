@@ -27,6 +27,14 @@ Use exatamente essa versão para evitar diferenças nos arquivos `.tscn`/`projec
 
    e acesse <http://localhost:8000>.
 
+   Pela linha de comando (PowerShell), o export é:
+
+   ```powershell
+   & "C:\caminho\para\Godot_v4.7.2-stable_win64.exe" --headless --path . --export-release "Web" build/web/index.html
+   ```
+
+O arquivo `build/.gdignore` impede o Godot de importar os arquivos exportados. O preset Web exclui os arquivos C# do addon, que não são usados.
+
 ## Estrutura de pastas
 
 ```
@@ -48,9 +56,12 @@ scripts/
 
 Usamos o addon **[Dialogue Manager](https://github.com/nathanhoad/godot_dialogue_manager) v4.1.0** (Nathan Hoad), instalado em `addons/dialogue_manager/`. Ele já vem ativado no projeto.
 
-- Os roteiros ficam em `dialogue/` com extensão `.dialogue` (ex: `dialogue/cena_cama.dialogue`).
+- Os roteiros ficam em `dialogue/` com extensão `.dialogue`. O `dialogue/teste_mecanicas.dialogue` é o exemplo com todas as mecânicas e é o que roda ao clicar em **Jogar**.
 - Para editar, use a aba **Dialogue** no topo do editor (ao lado de 2D/3D/Script).
-- O estado do jogo (paciência, afeto, turnos, argumentos usados) fica no autoload `EstadoJogo` (`scripts/autoload/estado_jogo.gd`), e os roteiros leem e alteram ele direto.
+- O estado do jogo fica no autoload `EstadoJogo` (`scripts/autoload/estado_jogo.gd`), e os roteiros leem e alteram ele direto:
+  - `EstadoJogo.paciencia` (começa em 5), `EstadoJogo.afeto` (2) e `EstadoJogo.turnos` (8);
+  - `EstadoJogo.usar_argumento("nome")` marca um argumento como usado, e `EstadoJogo.ja_usou("nome")` diz se ele já foi usado;
+  - `EstadoJogo.resetar()` volta tudo ao início (o `teste_mecanicas` chama isso na primeira linha).
 - Indentação é com **Tab**.
 
 ### Linha de diálogo
@@ -59,7 +70,7 @@ Usamos o addon **[Dialogue Manager](https://github.com/nathanhoad/godot_dialogue
 Fêmea: Foi ótimo, querido. De verdade.
 ```
 
-`Nome: texto`. O nome antes dos dois-pontos é quem fala.
+`Nome: texto`. O nome antes dos dois-pontos é quem fala. Para mostrar o valor de uma variável na fala, use `{{EstadoJogo.afeto}}`.
 
 ### Escolha
 
@@ -86,7 +97,17 @@ else
 	=> comido
 ```
 
-`~ nome` marca um ponto do roteiro (cue), `=> nome` pula para ele e `=> END` encerra a conversa. Uma opção também pode ter condição: `- Opção secreta [if EstadoJogo.afeto > 4 /]`.
+`~ nome` marca um ponto do roteiro (cue), `=> nome` pula para ele e `=> END` encerra a conversa.
+
+### Opção com condição (ex: uso único)
+
+Coloque `[if ... /]` no fim da opção. Se a condição for falsa, a opção aparece cinza e não pode ser clicada:
+
+```
+- Fingir que é um graveto [if not EstadoJogo.ja_usou("graveto") /]
+	$> EstadoJogo.usar_argumento("graveto")
+	Macho: (Eu sou um graveto.)
+```
 
 Documentação completa: <https://github.com/nathanhoad/godot_dialogue_manager/tree/main/docs>.
 

@@ -10,6 +10,9 @@ Guia para o Claude trabalhar neste projeto: **Amor de Inseto**, um date sim (vis
 - Alvo: **WEB** (itch.io ou GitHub Pages). Evite recursos que não funcionam no export HTML5 (threads, C#, acesso a arquivos do sistema, etc.).
 - Janela base 1920x1080, stretch `canvas_items`, aspect `keep`.
 - Executável do Godot: caminho local de cada pessoa (o desta máquina fica no `CLAUDE.local.md`, que não é versionado).
+- Ambiente: Windows + PowerShell. Chamar o Godot com `& "C:\...\Godot_v4.7.2-stable_win64.exe" ...` (caminho Windows). Usar `python`, não `python3`.
+- Export templates 4.7.2 instalados. Export: `& $godot --headless --path . --export-release "Web" build/web/index.html`; testar com `python -m http.server 8000 --directory build/web`.
+- `build/.gdignore` (versionado) impede o editor de importar o build. O preset Web tem `exclude_filter` para os `.cs` e as cenas C# do addon (o Godot sem .NET não carrega e gera erros).
 
 ## Estrutura de pastas
 
@@ -43,15 +46,21 @@ build/web/           saída do export web (ignorada pelo git)
 - Addon de Nathan Hoad (github.com/nathanhoad/godot_dialogue_manager), versão **4.1.0** (requer Godot 4.6+). Plugin ativo e autoload `DialogueManager` registrado.
 - Não editar arquivos dentro de `addons/dialogue_manager/`. Para customizar o balão, gerar uma cópia (Projeto > Ferramentas > Dialogue > Create Balloon) fora de `addons/`.
 - Roteiros em `dialogue/*.dialogue`, escritos em português, indentados com Tab.
-- Estado: autoload `EstadoJogo` (`scripts/autoload/estado_jogo.gd`) com `paciencia`, `afeto`, `turnos` e `argumentos_usados` (Dictionary). Nos roteiros, sempre acessar como `EstadoJogo.variavel`.
+- Estado: autoload `EstadoJogo` (`scripts/autoload/estado_jogo.gd`). Nos roteiros, sempre acessar como `EstadoJogo.variavel`.
+  - Variáveis `paciencia` (5), `afeto` (2) e `turnos` (8), com setters que emitem `paciencia_mudou`, `afeto_mudou` e `turnos_mudou`.
+  - `argumentos_usados` (Dictionary): alterar só via `usar_argumento(nome)` (emite `argumento_usado`) e consultar com `ja_usou(nome)`.
+  - `resetar()` volta aos valores iniciais e emite `estado_resetado`.
 - Sintaxe da v4 (diferente da v3): títulos agora se chamam *cues* (`~ nome`), e condições em opções usam `[if ... /]` (com a barra).
   - Fala: `Fêmea: texto`
   - Escolha: linhas com `- texto`, com o conteúdo do ramo indentado abaixo
   - Mutation: `$> EstadoJogo.afeto += 1`
   - Condição: `if EstadoJogo.afeto >= 3` / `elif` / `else`
   - Pulo: `=> cue`, fim: `=> END`
-- Cena atual: `scenes/game/cena_cama.tscn` chama `DialogueManager.show_example_dialogue_balloon(...)`.
-- `--check-only` acusa "Identifier not found: DialogueManager/EstadoJogo" porque não carrega autoloads (falso positivo). Validar rodando a cena/um script headless.
+  - Opção de uso único: `- texto [if not EstadoJogo.ja_usou("x") /]` + `$> EstadoJogo.usar_argumento("x")`
+  - Variável na fala: `{{EstadoJogo.afeto}}`
+- O balão de exemplo mostra opções com condição falsa desabilitadas (cinza); para escondê-las, ligar `hide_failed_responses` no ResponsesMenu de um balão copiado.
+- Roteiros: `dialogue/teste_mecanicas.dialogue` (teste de mecânicas, iniciado pela `scenes/game/teste_cena.tscn`, que é para onde o Jogar leva) e `dialogue/cena_cama.dialogue` (primeiro teste, iniciado pela `scenes/game/cena_cama.tscn`). As duas cenas chamam `DialogueManager.show_example_dialogue_balloon(...)`.
+- `--check-only` acusa "Identifier not found: DialogueManager/EstadoJogo" porque não carrega autoloads (falso positivo). Validar rodando a cena/um script headless (com `extends SceneTree`, esperar `await process_frame` antes de carregar cenas que usam autoloads).
 - Para validar um `.dialogue`, rode `--headless --import` (compila os roteiros) e percorra o roteiro com `DialogueManager.get_next_dialogue_line`.
 - O Godot remove do `project.godot` valores iguais ao padrão (ex: `stretch/aspect="keep"`). Isso é normal.
 
