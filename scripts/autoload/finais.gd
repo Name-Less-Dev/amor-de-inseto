@@ -29,6 +29,7 @@ var cena_origem: String = ""
 func ir_para_final(id: String) -> void:
 	assert(FINAIS.has(id), "Final desconhecido: %s" % id)
 	final_atual = id
+	Progresso.registrar_final(id)
 	var cena_atual := get_tree().current_scene.scene_file_path
 	if cena_atual != TELA_FINAL:
 		cena_origem = cena_atual

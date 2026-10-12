@@ -7,6 +7,7 @@ func _ready() -> void:
 	var final: Dictionary = Finais.FINAIS.get(Finais.final_atual, {})
 	%Titulo.text = final.get("titulo", "")
 	%Frase.text = final.get("frase", "")
+	%Contador.text = "Finais descobertos: %d/%d" % [Progresso.quantidade_finais_vistos(), Finais.FINAIS.size()]
 	%BotaoJogarDeNovo.pressed.connect(_on_botao_jogar_de_novo_pressed)
 	%BotaoMenu.pressed.connect(_on_botao_menu_pressed)
 	%BotaoJogarDeNovo.grab_focus()
