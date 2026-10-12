@@ -23,6 +23,10 @@ const TEMPO_ESCOLHA_BASE := 10.0
 ## Timer de escolha: o tempo nunca fica abaixo disso (segundos).
 const TEMPO_ESCOLHA_MINIMO := 5.0
 
+## Penalidade padrão quando o tempo de uma escolha acaba (trecho ~silencio).
+const SILENCIO_CUSTO_TURNOS := 1
+const SILENCIO_CUSTO_PACIENCIA := 1
+
 ## Paciência da fêmea. Se acabar, ela perde a vontade de ouvir.
 var paciencia: int = PACIENCIA_INICIAL:
 	set(valor):
@@ -77,6 +81,13 @@ func final_por_regras() -> String:
 func tempo_pela_paciencia() -> float:
 	var proporcao := float(paciencia) / PACIENCIA_INICIAL
 	return maxf(TEMPO_ESCOLHA_MINIMO, TEMPO_ESCOLHA_BASE * proporcao)
+
+
+## Penalidade padrão do silêncio (tempo da escolha esgotado): gasta turno e paciência.
+## Nos roteiros, dentro do ~silencio: $> EstadoJogo.aplicar_silencio()
+func aplicar_silencio() -> void:
+	turnos -= SILENCIO_CUSTO_TURNOS
+	paciencia -= SILENCIO_CUSTO_PACIENCIA
 
 
 ## Marca um argumento como usado. Nos roteiros: $> EstadoJogo.usar_argumento("nome")

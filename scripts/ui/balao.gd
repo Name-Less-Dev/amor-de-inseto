@@ -76,6 +76,9 @@ var mutation_cooldown: Timer = Timer.new()
 ## volta de uma aba em segundo plano (onde o navegador congela os frames).
 const DELTA_MAXIMO := 0.25
 
+## Trecho do roteiro disparado quando o tempo de uma escolha acaba.
+const CUE_SILENCIO := "silencio"
+
 ## Cores da barra de tempo: cheia -> metade -> acabando.
 const COR_TEMPO_CHEIO := Color(0.3, 0.8, 0.3)
 const COR_TEMPO_METADE := Color(0.95, 0.8, 0.2)
@@ -296,8 +299,23 @@ func _atualizar_barra() -> void:
 	(barra_tempo.get_theme_stylebox("fill") as StyleBoxFlat).bg_color = cor
 
 
+## Tempo acabou: nada de opção aleatória. Vai para o ~silencio do roteiro atual.
 func _on_tempo_esgotado() -> void:
 	_parar_timer()
+	responses_menu.hide()
+	if dialogue_resource.cues.has(CUE_SILENCIO):
+		next(CUE_SILENCIO)
+		return
+
+	# Fallback seguro: o roteiro não tem ~silencio.
+	push_warning("Roteiro %s não tem ~%s; aplicando a penalidade padrão." % [dialogue_resource.resource_path, CUE_SILENCIO])
+	EstadoJogo.aplicar_silencio()
+	var final: String = EstadoJogo.final_por_regras()
+	if final != "":
+		Finais.ir_para_final(final)
+	else:
+		# Mostra a mesma pergunta de novo (relida, para atualizar textos e condições).
+		next(dialogue_line.id)
 
 
 #endregion
