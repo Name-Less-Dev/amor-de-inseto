@@ -10,8 +10,9 @@
 data_*/
 mono_crash.*.json
 
-# Exports
-build/
+# Exports (build/.gdignore fica versionado para o Godot não importar os arquivos gerados)
+build/*
+!build/.gdignore
 export/
 export_credentials.cfg
 
