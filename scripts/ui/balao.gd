@@ -268,7 +268,8 @@ func _on_responses_menu_response_selected(response: DialogueResponse) -> void:
 
 
 func _iniciar_timer() -> void:
-	var segundos: float = EstadoJogo.tempo_escolha
+	# Acessibilidade: desligado (x0), normal (x1) ou lento (x2).
+	var segundos: float = EstadoJogo.tempo_escolha * Configuracoes.multiplicador_timer()
 	if segundos <= 0.0:
 		return
 	_tempo_total = segundos

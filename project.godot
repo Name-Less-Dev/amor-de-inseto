@@ -21,6 +21,7 @@ DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 EstadoJogo="*res://scripts/autoload/estado_jogo.gd"
 Finais="*res://scripts/autoload/finais.gd"
 Progresso="*res://scripts/autoload/progresso.gd"
+Configuracoes="*res://scripts/autoload/configuracoes.gd"
 
 [dialogue_manager]
 
