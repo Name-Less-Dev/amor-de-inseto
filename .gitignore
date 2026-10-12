@@ -21,3 +21,6 @@ export_credentials.cfg
 Thumbs.db
 *.tmp
 .vscode/
+
+# Notas locais de cada máquina (caminhos etc.)
+CLAUDE.local.md
