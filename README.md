@@ -62,6 +62,13 @@ Usamos o addon **[Dialogue Manager](https://github.com/nathanhoad/godot_dialogue
   - `EstadoJogo.paciencia` (começa em 5), `EstadoJogo.afeto` (2) e `EstadoJogo.turnos` (8);
   - `EstadoJogo.usar_argumento("nome")` marca um argumento como usado, e `EstadoJogo.ja_usou("nome")` diz se ele já foi usado;
   - `EstadoJogo.resetar()` volta tudo ao início (o `teste_mecanicas` chama isso na primeira linha).
+- Regras automáticas de fim (os limites ficam como constantes no topo do `estado_jogo.gd`):
+  - paciência chega a 0 → **comido** na hora;
+  - afeto chega a 6 → **sobrevive** antes do tempo;
+  - turnos chegam a 0 → **sobrevive** se afeto >= 4, senão **comido**.
+- Os finais (título e frase da tela final) ficam em `scripts/autoload/finais.gd`. Para encerrar o roteiro num final, use `$> Finais.ir_para_final("comido")`.
+- Os finais já vistos ficam salvos no computador/navegador do jogador (`user://progresso.cfg`).
+- O balão de diálogo do jogo é `scenes/ui/balao.tscn`. Visual (fontes, cores, posição das escolhas) se ajusta nele pelo editor.
 - Indentação é com **Tab**.
 
 ### Linha de diálogo
@@ -101,7 +108,7 @@ else
 
 ### Opção com condição (ex: uso único)
 
-Coloque `[if ... /]` no fim da opção. Se a condição for falsa, a opção aparece cinza e não pode ser clicada:
+Coloque `[if ... /]` no fim da opção. Se a condição for falsa, a opção não aparece (o nosso balão esconde opções bloqueadas):
 
 ```
 - Fingir que é um graveto [if not EstadoJogo.ja_usou("graveto") /]
