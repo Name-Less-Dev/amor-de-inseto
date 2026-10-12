@@ -99,7 +99,7 @@ Documentação completa: <https://github.com/nathanhoad/godot_dialogue_manager/t
 ## Formato dos assets
 
 - Imagens em **PNG com transparência** (canal alfa).
-- Resolução base do jogo: **1280x720**. Faça fundos nesse tamanho (ou maior, na mesma proporção 16:9).
+- Resolução base do jogo: **1920x1080**. Faça fundos nesse tamanho (ou maior, na mesma proporção 16:9).
 
 ## Time
 

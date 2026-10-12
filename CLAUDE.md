@@ -8,7 +8,7 @@ Guia para o Claude trabalhar neste projeto: **Amor de Inseto**, um date sim (vis
 - **GDScript** apenas. **Não usar C#** (não exporta para web no Godot 4).
 - Renderer: **Compatibility** (`gl_compatibility`) — obrigatório para web. Não trocar para Forward+/Mobile.
 - Alvo: **WEB** (itch.io ou GitHub Pages). Evite recursos que não funcionam no export HTML5 (threads, C#, acesso a arquivos do sistema, etc.).
-- Janela base 1280x720, stretch `canvas_items`, aspect `keep`.
+- Janela base 1920x1080, stretch `canvas_items`, aspect `keep`.
 - Executável do Godot: caminho local de cada pessoa (o desta máquina fica no `CLAUDE.local.md`, que não é versionado).
 
 ## Estrutura de pastas
