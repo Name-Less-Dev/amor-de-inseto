@@ -12,7 +12,7 @@ Macho: (Paciência dela: {{EstadoJogo.paciencia}} | afeto: {{EstadoJogo.afeto}} 
 	Fêmea: Para, seu bobo.
 - Reclamar dessa tradição de comer o parceiro
 	$> EstadoJogo.afeto -= 1
-	$> EstadoJogo.paciencia -= 2
+	$> EstadoJogo.paciencia -= 1
 	Macho: Sinceramente, essa tradição é muito ultrapassada.
 	Fêmea: Tradição é tradição, querido.
 - Fingir que é um graveto [if not EstadoJogo.ja_usou("graveto") /]
@@ -21,15 +21,15 @@ Macho: (Paciência dela: {{EstadoJogo.paciencia}} | afeto: {{EstadoJogo.afeto}} 
 	Macho: ...
 	Macho: (Eu sou um graveto. Eu sou um graveto.)
 	Fêmea: Você sabe que eu tô te vendo, né?
+	if EstadoJogo.afeto >= 3
+		=> final_absurdo
 $> EstadoJogo.turnos -= 1
-if EstadoJogo.turnos > 6
-	=> argumentar
-if EstadoJogo.ja_usou("graveto") and EstadoJogo.afeto >= 3
-	=> final_absurdo
-elif EstadoJogo.afeto >= 4 and EstadoJogo.paciencia > 0
-	=> final_sobrevive
-else
-	=> final_comido
+match EstadoJogo.final_por_regras()
+	when "comido"
+		=> final_comido
+	when "sobrevive"
+		=> final_sobrevive
+=> argumentar
 
 ~ final_sobrevive
 Fêmea: Tá bom, você me convenceu. Pode ficar.

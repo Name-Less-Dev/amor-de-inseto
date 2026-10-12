@@ -11,6 +11,13 @@ const PACIENCIA_INICIAL := 5
 const AFETO_INICIAL := 2
 const TURNOS_INICIAIS := 8
 
+## Paciência igual ou abaixo disso: ela come o macho na hora.
+const PACIENCIA_LIMITE := 0
+## Afeto igual ou acima disso: final bom antecipado.
+const AFETO_FINAL_BOM := 6
+## Quando os turnos acabam, afeto mínimo para sobreviver.
+const AFETO_MINIMO_SOBREVIVER := 4
+
 ## Paciência da fêmea. Se acabar, ela perde a vontade de ouvir.
 var paciencia: int = PACIENCIA_INICIAL:
 	set(valor):
@@ -40,6 +47,18 @@ func resetar() -> void:
 	turnos = TURNOS_INICIAIS
 	argumentos_usados.clear()
 	estado_resetado.emit()
+
+
+## Aplica as regras de fim de jogo. Retorna o id do final ou "" se o jogo continua.
+## Ordem: paciência esgotada, afeto alto, turnos esgotados.
+func final_por_regras() -> String:
+	if paciencia <= PACIENCIA_LIMITE:
+		return "comido"
+	if afeto >= AFETO_FINAL_BOM:
+		return "sobrevive"
+	if turnos <= 0:
+		return "sobrevive" if afeto >= AFETO_MINIMO_SOBREVIVER else "comido"
+	return ""
 
 
 ## Marca um argumento como usado. Nos roteiros: $> EstadoJogo.usar_argumento("nome")
