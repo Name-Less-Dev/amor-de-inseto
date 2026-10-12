@@ -1,0 +1,21 @@
+# Godot 4+
+.godot/
+/android/
+
+# Arquivos gerados de tradução
+*.translation
+
+# Mono/C# (não usamos, mas por garantia)
+.mono/
+data_*/
+mono_crash.*.json
+
+# Exports
+export/
+export_credentials.cfg
+
+# Sistema / editores
+.DS_Store
+Thumbs.db
+*.tmp
+.vscode/
