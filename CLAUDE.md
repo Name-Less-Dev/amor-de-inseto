@@ -54,7 +54,17 @@ build/web/           saída do export web (ignorada pelo git)
 - Autoload `Finais` (`scripts/autoload/finais.gd`): dicionário `FINAIS` (id → título/frase) e `ir_para_final(id)`, que registra no save, guarda a cena de origem e abre `scenes/ui/tela_final.tscn`. Nos roteiros: `$> Finais.ir_para_final("comido")` antes do `=> END`. Final novo = entrada nova em `FINAIS`.
 - Autoload `Progresso` (`scripts/autoload/progresso.gd`): ConfigFile em `user://progresso.cfg` com os finais vistos (na web fica no IndexedDB `/userfs`; persistência testada).
 - Balão do projeto: `scenes/ui/balao.tscn` + `scripts/ui/balao.gd` (cópia do exemplo, registrada em `dialogue_manager/runtime/balloon_path`). Fonte 30, escolhas em coluna à esquerda, `hide_failed_responses = true`. As cenas usam `DialogueManager.show_dialogue_balloon(...)`.
-- Ao rodar o jogo, Progresso grava em `%APPDATA%\Godot\app_userdata\Amor de Inseto\progresso.cfg`; apague esse arquivo depois de testes headless.
+  - Balão tem `ColunaEscolhas` (VBox) com `BarraTempo` (ProgressBar) acima do `ResponsesMenu`.
+- Timer de escolha (em `scripts/ui/balao.gd`, região "Timer de escolha"):
+  - Tempo vem de `EstadoJogo.tempo_escolha` (segundos; 0 = sem timer). Vale até o roteiro mudar; `resetar()` zera.
+  - Fórmula: `EstadoJogo.tempo_pela_paciencia()` = max(`TEMPO_ESCOLHA_MINIMO` 5s, `TEMPO_ESCOLHA_BASE` 10s × paciência/inicial). É avaliada no momento do `$>`.
+  - Começa só quando o menu aparece (depois da digitação). Contagem no `_process` com delta limitado (`DELTA_MAXIMO`), então congela com o jogo pausado, sem foco (`NOTIFICATION_APPLICATION_FOCUS_OUT`) e em aba de fundo, sem pular ao voltar.
+  - Tempo esgotado → `next("silencio")` se `dialogue_resource.cues.has("silencio")`. Senão: fallback com `push_warning`, `EstadoJogo.aplicar_silencio()` (−`SILENCIO_CUSTO_TURNOS`, −`SILENCIO_CUSTO_PACIENCIA`), `final_por_regras()` e repete a pergunta (`next(dialogue_line.id)`).
+  - Multiplicado por `Configuracoes.multiplicador_timer()` (autoload `scripts/autoload/configuracoes.gd`, `user://configuracoes.cfg`; DESLIGADO ×0, NORMAL ×1, LENTO ×`MULTIPLICADOR_LENTO` 2). UI de opções pendente.
+- Pausa simples: autoload `Pausa` (`scenes/ui/pausa.tscn` + `scripts/autoload/pausa.gd`, `PROCESS_MODE_ALWAYS`). A ação `pausa` alterna `get_tree().paused` no `_input` (o balão consome o `_unhandled_input`).
+- Roteiros com timer devem ter `~ silencio`. No `teste_mecanicas`, as regras de fim ficam no cue `~ checar`, usado pelas escolhas e pelo silêncio.
+- Ao rodar o jogo, Progresso e Configuracoes gravam em `%APPDATA%\Godot\app_userdata\Amor de Inseto\` (`progresso.cfg`, `configuracoes.cfg`); apague depois de testes headless.
+- Em testes headless: o `start` do `teste_mecanicas` chama `resetar()` (zera `tempo_escolha`); defina o tempo depois que a cena carregou. Use `--quit-after N` para o teste não travar.
 - Sintaxe da v4 (diferente da v3): títulos agora se chamam *cues* (`~ nome`), e condições em opções usam `[if ... /]` (com a barra).
   - Fala: `Fêmea: texto`
   - Escolha: linhas com `- texto`, com o conteúdo do ramo indentado abaixo

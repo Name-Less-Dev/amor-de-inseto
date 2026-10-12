@@ -116,6 +116,38 @@ Coloque `[if ... /]` no fim da opção. Se a condição for falsa, a opção nã
 	Macho: (Eu sou um graveto.)
 ```
 
+### Escolha com tempo (timer de pressão)
+
+Antes da escolha, defina quantos segundos o jogador tem. O valor **continua valendo** para as escolhas seguintes até você mudar (`0` = sem timer):
+
+```
+$> EstadoJogo.tempo_escolha = 4
+Macho: E agora?
+- Opção A
+- Opção B
+```
+
+Para o tempo cair junto com a paciência (10s com paciência cheia, mínimo 5s), use a fórmula. Ela é calculada na hora em que a linha roda, então repita a linha antes de cada escolha:
+
+```
+$> EstadoJogo.tempo_escolha = EstadoJogo.tempo_pela_paciencia()
+```
+
+- O timer só começa depois que a fala termina de ser digitada. A barra em cima das opções vai de verde a vermelho.
+- Se o tempo acabar, o jogo **não** escolhe sozinho: ele pula para o trecho `~ silencio` do roteiro. Todo roteiro com timer deve ter um:
+
+  ```
+  ~ silencio
+  Fêmea: ...Vai ficar calado, é?
+  $> EstadoJogo.aplicar_silencio()
+  => checar
+  ```
+
+  `aplicar_silencio()` é a penalidade padrão: −1 turno e −1 de paciência. Se o roteiro não tiver `~ silencio`, o jogo aplica essa penalidade, avisa no console e repete a pergunta.
+- **Esc** pausa o jogo, e o timer para junto. O timer também para quando a aba ou janela perde o foco.
+- O tempo base, o mínimo e as penalidades são constantes no topo de `scripts/autoload/estado_jogo.gd`.
+- Acessibilidade: `Configuracoes.modo_timer` (desligado, normal ou lento 2x) fica salvo no navegador. A tela de opções ainda não existe.
+
 Documentação completa: <https://github.com/nathanhoad/godot_dialogue_manager/tree/main/docs>.
 
 ## Convenções de nome
