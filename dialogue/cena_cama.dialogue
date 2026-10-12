@@ -1,0 +1,38 @@
+~ start
+Fêmea: Foi ótimo, querido. De verdade.
+Fêmea: Pena que agora eu estou morrendo de fome...
+Macho: Espera! Antes de qualquer coisa, me escuta.
+- Elogiar os olhos dela
+	$> EstadoJogo.argumentos_usados["elogio"] = true
+	$> EstadoJogo.afeto += 1
+	$> EstadoJogo.turnos -= 1
+	Macho: Seus olhos compostos... são milhares de motivos pra eu querer continuar vivo.
+	Fêmea: Hmm. Continua.
+- Prometer caçar o jantar dela
+	$> EstadoJogo.argumentos_usados["cacar_jantar"] = true
+	$> EstadoJogo.afeto += 1
+	$> EstadoJogo.paciencia -= 1
+	$> EstadoJogo.turnos -= 1
+	Macho: Vivo, eu te trago uma mosca gorda todo dia. Morto, eu sou só um lanche.
+	Fêmea: Uma mosca por dia? ...Faz sentido.
+- Dizer que ela não teria coragem
+	$> EstadoJogo.argumentos_usados["desafio"] = true
+	$> EstadoJogo.afeto -= 1
+	$> EstadoJogo.paciencia -= 3
+	$> EstadoJogo.turnos -= 1
+	Macho: Ah, para. Você nunca teria coragem.
+	Fêmea: Ah, é?
+if EstadoJogo.afeto >= 3 and EstadoJogo.paciencia > 0
+	=> sobrevive
+else
+	=> comido
+
+~ sobrevive
+Fêmea: Tá bom. Você ganhou mais um dia.
+Macho: (Ufa.)
+=> END
+
+~ comido
+Fêmea: Desculpa, amor. Nada pessoal.
+Macho: Esper—
+=> END

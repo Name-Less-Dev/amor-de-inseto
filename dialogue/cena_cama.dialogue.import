@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://g2cps2bsqbym"
+path="res://.godot/imported/cena_cama.dialogue-1ccdff81b74da1c8a58b2a7530bbc211.tres"
+
+[deps]
+
+source_file="res://dialogue/cena_cama.dialogue"
+dest_files=["res://.godot/imported/cena_cama.dialogue-1ccdff81b74da1c8a58b2a7530bbc211.tres"]
+
+[params]
+
+defaults=true
