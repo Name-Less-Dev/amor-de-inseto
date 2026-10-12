@@ -22,6 +22,7 @@ EstadoJogo="*res://scripts/autoload/estado_jogo.gd"
 Finais="*res://scripts/autoload/finais.gd"
 Progresso="*res://scripts/autoload/progresso.gd"
 Configuracoes="*res://scripts/autoload/configuracoes.gd"
+Pausa="*res://scenes/ui/pausa.tscn"
 
 [dialogue_manager]
 
