@@ -18,6 +18,11 @@ const AFETO_FINAL_BOM := 6
 ## Quando os turnos acabam, afeto mínimo para sobreviver.
 const AFETO_MINIMO_SOBREVIVER := 4
 
+## Timer de escolha: tempo com a paciência cheia (segundos).
+const TEMPO_ESCOLHA_BASE := 10.0
+## Timer de escolha: o tempo nunca fica abaixo disso (segundos).
+const TEMPO_ESCOLHA_MINIMO := 5.0
+
 ## Paciência da fêmea. Se acabar, ela perde a vontade de ouvir.
 var paciencia: int = PACIENCIA_INICIAL:
 	set(valor):
@@ -64,6 +69,14 @@ func final_por_regras() -> String:
 	if turnos <= 0:
 		return "sobrevive" if afeto >= AFETO_MINIMO_SOBREVIVER else "comido"
 	return ""
+
+
+## Tempo de escolha proporcional à paciência atual: cai junto com ela, sem passar do mínimo.
+## Com os valores padrão: paciência 5 -> 10s, 4 -> 8s, 3 -> 6s, 2 ou menos -> 5s.
+## Nos roteiros: $> EstadoJogo.tempo_escolha = EstadoJogo.tempo_pela_paciencia()
+func tempo_pela_paciencia() -> float:
+	var proporcao := float(paciencia) / PACIENCIA_INICIAL
+	return maxf(TEMPO_ESCOLHA_MINIMO, TEMPO_ESCOLHA_BASE * proporcao)
 
 
 ## Marca um argumento como usado. Nos roteiros: $> EstadoJogo.usar_argumento("nome")
