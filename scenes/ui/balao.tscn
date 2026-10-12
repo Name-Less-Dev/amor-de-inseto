@@ -63,6 +63,20 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_barra_fundo"]
+bg_color = Color(0, 0, 0, 0.6)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_barra_cheia"]
+bg_color = Color(0.3, 0.8, 0.3, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
 [sub_resource type="Theme" id="Theme_qq3yp"]
 default_font_size = 30
 Button/styles/disabled = SubResource("StyleBoxFlat_spyqn")
@@ -188,7 +202,22 @@ offset_right = 720.0
 offset_bottom = -330.0
 grow_vertical = 2
 
-[node name="ResponsesMenu" type="VBoxContainer" parent="Balloon/CenterContainer" unique_id=1801308483 node_paths=PackedStringArray("response_template")]
+[node name="ColunaEscolhas" type="VBoxContainer" parent="Balloon/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BarraTempo" type="ProgressBar" parent="Balloon/CenterContainer/ColunaEscolhas"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_barra_fundo")
+theme_override_styles/fill = SubResource("StyleBoxFlat_barra_cheia")
+max_value = 1.0
+value = 1.0
+show_percentage = false
+
+[node name="ResponsesMenu" type="VBoxContainer" parent="Balloon/CenterContainer/ColunaEscolhas" unique_id=1801308483 node_paths=PackedStringArray("response_template")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 8
@@ -199,7 +228,7 @@ script = ExtResource("3_72ixx")
 response_template = NodePath("ResponseExample")
 hide_failed_responses = true
 
-[node name="ResponseExample" type="Button" parent="Balloon/CenterContainer/ResponsesMenu" unique_id=1446810977]
+[node name="ResponseExample" type="Button" parent="Balloon/CenterContainer/ColunaEscolhas/ResponsesMenu" unique_id=1446810977]
 layout_mode = 2
 text = "Response example"
 
@@ -207,4 +236,4 @@ text = "Response example"
 unique_name_in_owner = true
 
 [connection signal="gui_input" from="Balloon" to="." method="_on_balloon_gui_input"]
-[connection signal="response_selected" from="Balloon/CenterContainer/ResponsesMenu" to="." method="_on_responses_menu_response_selected"]
+[connection signal="response_selected" from="Balloon/CenterContainer/ColunaEscolhas/ResponsesMenu" to="." method="_on_responses_menu_response_selected"]

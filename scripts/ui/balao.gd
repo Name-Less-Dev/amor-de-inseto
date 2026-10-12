@@ -76,6 +76,14 @@ var mutation_cooldown: Timer = Timer.new()
 ## volta de uma aba em segundo plano (onde o navegador congela os frames).
 const DELTA_MAXIMO := 0.25
 
+## Cores da barra de tempo: cheia -> metade -> acabando.
+const COR_TEMPO_CHEIO := Color(0.3, 0.8, 0.3)
+const COR_TEMPO_METADE := Color(0.95, 0.8, 0.2)
+const COR_TEMPO_ACABANDO := Color(0.9, 0.15, 0.15)
+
+## Barra que mostra o tempo restante, em cima do menu de escolhas.
+@onready var barra_tempo: ProgressBar = %BarraTempo
+
 ## Emitido quando o timer de uma escolha começa e acaba (por escolha ou por tempo).
 signal timer_escolha_iniciado(segundos: float)
 signal timer_escolha_parado
@@ -113,6 +121,7 @@ func _process(delta: float) -> void:
 	# Com o jogo pausado o _process não roda, então o timer também para.
 	if _timer_ativo and not _sem_foco:
 		_tempo_restante -= minf(delta, DELTA_MAXIMO)
+		_atualizar_barra()
 		if _tempo_restante <= 0.0:
 			_on_tempo_esgotado()
 
@@ -262,14 +271,29 @@ func _iniciar_timer() -> void:
 	_tempo_total = segundos
 	_tempo_restante = segundos
 	_timer_ativo = true
+	_atualizar_barra()
+	barra_tempo.show()
 	timer_escolha_iniciado.emit(segundos)
 
 
 func _parar_timer() -> void:
+	barra_tempo.hide()
 	if not _timer_ativo:
 		return
 	_timer_ativo = false
 	timer_escolha_parado.emit()
+
+
+## Atualiza o tamanho e a cor da barra: verde -> amarelo -> vermelho.
+func _atualizar_barra() -> void:
+	var fracao: float = clampf(_tempo_restante / _tempo_total, 0.0, 1.0)
+	barra_tempo.value = fracao
+	var cor: Color
+	if fracao > 0.5:
+		cor = COR_TEMPO_METADE.lerp(COR_TEMPO_CHEIO, (fracao - 0.5) * 2.0)
+	else:
+		cor = COR_TEMPO_ACABANDO.lerp(COR_TEMPO_METADE, fracao * 2.0)
+	(barra_tempo.get_theme_stylebox("fill") as StyleBoxFlat).bg_color = cor
 
 
 func _on_tempo_esgotado() -> void:
